@@ -1,0 +1,17 @@
+direction_groups = [1g,2g,3g,4g]
+animation_groups = [5g,6g,7g,8g]
+
+direction = counter(bits = 2)
+animation_frame = counter(bits = 2)
+
+for i in 0..4 {
+  on(direction.reaches(i), !{
+    for j in 0..4 {
+      if i == j {
+        direction_groups[j].toggle_on()
+      } else {
+        direction_groups[j].toggle_off()
+      }
+    }
+  })
+}

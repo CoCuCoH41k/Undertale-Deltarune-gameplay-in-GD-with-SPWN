@@ -1,0 +1,56 @@
+extract obj_props
+// block size 30, 1/4 block size 7.5 | id 917
+
+path = "C:\\Users\\DENIS\\Desktop\\"
+
+let channels_colors_set = []
+let colors = []
+let blocks = []
+let offset = 0
+
+check_match = (match_c) {
+    for color in colors {
+        if (color.r8() == match_c.r8() && color.b8() == match_c.b8() && color.g8() == match_c.g8() && color.a8() == match_c.a8()) {
+            return true
+        }
+    }
+    return false
+}
+
+for jevil in 0..1 { //path + "jevil_" + @string(jevil) + ".json"
+    let data = $.readfile(path + "kris_walk.json", "json")
+
+    let raw_colors_set = data['colors_set']
+    let size = data['size']
+    let pixels = data['pixels']
+
+    for color in raw_colors_set {
+        
+        if !check_match(rgb8(color[0], color[1], color[2], color[3])) {
+            let cc = ?c
+            cc.set(rgb8(color[0], color[1], color[2], color[3]))
+            $.print(cc)
+            channels_colors_set.push(cc)
+            colors.push(rgb8(color[0], color[1], color[2], color[3]))
+        }
+    }
+
+    
+    for pixel in pixels {
+        if raw_colors_set[pixel[2]][3] != 0 {
+            blocks.push( obj {
+                X: pixel[0] * 7.5 + offset,
+                Y: pixel[1] * 7.5,
+                OBJ_ID: 917,
+                COLOR: channels_colors_set[pixel[2]]
+            })
+        }
+    }
+    offset += 30
+
+    
+}
+
+for block in blocks {
+    $.add(block)
+}
