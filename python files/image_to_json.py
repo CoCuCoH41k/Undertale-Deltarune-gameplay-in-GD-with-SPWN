@@ -55,13 +55,16 @@ def get_pixel_data() -> list:
             data.append([x, y, get_color_index(color[0], color[1], color[2], color[3])])
             index += 1
     return data
+
+
 def prepare_image(path) -> Image:
     if not os.path.exists(path):
         print(f'File at "{path}" is doesnt exist.')
         exit(0)
 
-    global size, colors_set, pixel
+    global size, colors_set
     image = Image.open(path)
+    image = image.transpose(Image.FLIP_TOP_BOTTOM)
     for tup in image.getcolors():
         colors_set.append(tup[1])
     size.append(image.size[0])
@@ -89,9 +92,10 @@ def main(args):
     path = r''
     raw_path = args[0].split('\\')[:len(args[0].split('\\')) - 1]
     json_name = args[1].split('\\')[len(args[1].split('\\')) - 1].split('.')[0] + '.json'
-    print(json_name)
+    filedir, filename = os.path.split(args[1])
+
     for point in raw_path:
-        path += point + '\\'
+        path += point + '/'
     with open(path + json_name, 'w') as file:
         json.dump(data, file)
 
