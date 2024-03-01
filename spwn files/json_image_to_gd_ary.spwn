@@ -1,5 +1,4 @@
 extract obj_props
-// block size 30, 1/4 block size 7.5 | id 917
 
 path = "C:\\Users\\DENIS\\Desktop\\gd gameplay deltarune-undertale\\Undertale-Deltarune-gameplay-in-GD-with-SPWN\\spwn files\\"
 
@@ -19,126 +18,10 @@ check_match = (match_c) {
     return false
 }
 
-get_block_by_pos = (x, y, blocks_array) {
-    for block in blocks_array {
-        if block[X] == x * gridSize && block[Y] == y * gridSize {
-            return block
-        }
-    }
-    return null
-}
-
-is_optimizeble = (block, blocks_array, size) {
-    $.print("Next...")
-    let block_cc = block[COLOR]
-    let X = block[X] / gridSize
-    let Y = block[Y] / gridSize
-    let succes_cnt = 0
-
-    if X + size > imgSize[0] || Y + size > imgSize[1] { return false }
-
-    for x in X..X+size { for y in Y..Y+size {
-        let to_check = get_block_by_pos(x, y, blocks_array)
-        if to_check == null { return false }
-        if to_check[COLOR] != block_cc { return false }
-        succes_cnt += 1
-        $.print(succes_cnt / (size ** 2))
-    }}
-    return true
-}
-
-
-optimize = (objects){
-    let new_blocks = objects
-    let new_fill_blocks = []
-    let flag = false
-
-    let optimized = {}
-
-    $.print("Objects count optimization...")
-
-    for optim_block_size in 5..2..2 {
-        let blocks_to_check = new_blocks
-        let optimized[@string(optim_block_size)] = 0
-        while true {
-            flag = true
-
-            for block in blocks_to_check {
-                blocks_to_check.pop(blocks_to_check.index(block))
-
-
-                if is_optimizeble(block, new_blocks, optim_block_size) {
-                    flag = false
-                    let Xpos = block[X] / gridSize
-                    let Ypos = block[Y] / gridSize
-                    for x in Xpos..Xpos+optim_block_size { for y in Ypos..Ypos+optim_block_size {
-                        let a = new_blocks.index(get_block_by_pos(x, y, new_blocks))
-                        if a != null {
-                            $.print("Removing block...")
-                            new_blocks.pop(a)
-                    }}}
-
-                    let filling_offset = 11.25 if optim_block_size == 4 else 3.75
-
-
-
-                    let filling = obj {
-                        X: Xpos * gridSize + filling_offset,
-                        Y: Ypos * gridSize + filling_offset,
-                        OBJ_ID: 955 if optim_block_size == 4 else 916,
-                        SCALING: 1,
-                        ROTATION: 0,
-                        COLOR: block[COLOR]
-                    }
-
-                    optimized[@string(optim_block_size)] += 1
-
-                    new_fill_blocks.push(filling)
-
-                    $.print("Done: ", @string(optimized[@string(optim_block_size)]))
-                    $.print("Blocks: ", @string(new_blocks.length + new_fill_blocks.length))
-
-                    $.print("Filling block at X: ", @string(filling[X]), " | Y: ", @string(filling[Y]), "\n")
-
-                    break
-                } 
-            }
-
-            if flag == true {
-                flag = false
-                break
-            }
-        }
-    }
-    
-
-    for block in new_fill_blocks {
-        new_blocks.push(block)
-    }
-
-    $.print("Optimization results:")
-
-    for [optSize, optCnt] in optimized {
-        $.print(optSize, "x", optSize, ": ", (@number(optSize) ** 2) * optCnt, " -> ", optCnt)
-    }
-
-    $.print("In short: ", blocks.length, " -> ", new_blocks.length)
-    $.print("Optimized: ", blocks.length - new_blocks.length, "\n")
-
-    return new_blocks
-}
-$.print("Reading JSON...")
-
 let data = $.readfile(path + "kris_walk.json", "json")
-let raw_colors_set = data['colors_set']
+let raw_colors_set = data['Colors_set']
 imgSize = data['size']
-let pixels = data['pixels']
-
-$.print("Done\n")
-
-
-
-$.print("Color optimization...")
+let pixels = data['Blocks']
 
 for color in raw_colors_set {
     if !check_match(rgb8(color[0], color[1], color[2], color[3])) {
@@ -149,36 +32,17 @@ for color in raw_colors_set {
     }
 }
 
-$.print("Done\n")
-
-
-
-$.print("Adding blocks...")
-    
 for pixel in pixels {
-    if raw_colors_set[pixel[2]][3] != 0 {
+    if raw_colors_set[pixel[3]][3] != 0 {
         blocks.push( obj {
-            X: pixel[0] * gridSize + offset,
-            Y: pixel[1] * gridSize,
-            OBJ_ID: 917,
-            COLOR: channels_colors_set[pixel[2]]
+            X: pixel[1] * gridSize + offset,
+            Y: pixel[2] * gridSize,
+            OBJ_ID: pixel[0],
+            COLOR: channels_colors_set[pixel[3]]
         })
     }
 }
-//offset += 30
-
-$.print("Done\n")
-
-
-
-blocks = optimize(blocks)
-
-
-
-$.print("Adding blocks into level...")
 
 for block in blocks {
     $.add(block)
 }
-
-$.print("Done\n")
