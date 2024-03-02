@@ -5,10 +5,14 @@ gs = import gamescene
 // TESTING ANIMATIONS
 
 let animation_frames = [2g, 3g, 4g, 5g]
-let direc_variations = [6g, 7g, 8g, 9g]
+let direc_variations = [6g, 7g, 9g, 8g]
+let dir_alpha = []
 
 direction = counter(bits = 2)
 animation_frame = counter(bits = 2)
+
+animation_frame.display(30, 30)
+direction.display(30, 60)
 
 //let last_dir = 0
 
@@ -16,6 +20,24 @@ animation_frames[0].toggle_on()
 for i in 1..animation_frames.length {
     animation_frames[i].toggle_off()
 } 
+
+direc_variations[0].alpha(1)
+for i in 1..4 {
+  direc_variations[i].alpha(0)
+}
+
+
+for dir in 0..4{
+  on(direction.reaches(dir), !{
+    for dir_i in 0..4 {
+      if dir == dir_i {
+        direc_variations[dir_i].alpha(1)
+      } else{
+        direc_variations[dir_i].alpha(0)
+      }
+    }
+  })
+}
 
 for i in 0..animation_frames.length {
   on(animation_frame.reaches(i), !{
@@ -29,9 +51,18 @@ for i in 0..animation_frames.length {
   })
 }
 
+
+
 while_loop(() => true, () {
-    animation_frame += 1
-  if animation_frame >= animation_frames.length {
+  animation_frame += 1
+  -> if animation_frame >= animation_frames.length {
     animation_frame -= 4
   }
 }, 0.3)
+
+on(touch(), !{
+  direction += 1
+  -> if direction >= 4 {
+    direction -= 4
+  }
+})
