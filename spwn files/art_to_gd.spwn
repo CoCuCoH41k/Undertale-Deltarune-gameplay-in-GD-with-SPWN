@@ -1,6 +1,6 @@
 extract obj_props
 
-path = "C:\\Users\\DENIS\\Desktop\\gd gameplay deltarune-undertale\\Undertale-Deltarune-gameplay-in-GD-with-SPWN\\spwn files\\"
+path = "C:\\Users\\DENIS\\Desktop\\gd gameplay deltarune-undertale\\Undertale-Deltarune-gameplay-in-GD-with-SPWN\\"
 
 let channels_colors_set = []
 let colors = []
@@ -18,7 +18,7 @@ check_match = (match_c) {
     return false
 }
 
-let data = $.readfile(path + "kris_walk.json", "json")
+let data = $.readfile(path + "art.json", "json")
 let raw_colors_set = data['Colors_set']
 imgSize = data['size']
 let pixels = data['Blocks']
