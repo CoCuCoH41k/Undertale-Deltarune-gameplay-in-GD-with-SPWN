@@ -13,3 +13,7 @@ Converter and optimization was merged in C# program in this [C# Project](https:/
 No support. I meditate under the sun to avoid eating.
 
 Also no releases lol. (Maybe?)
+
+USAGE TO art_to_gd.spwn
+put that into console: build spwn PATH_TO_SCRIPT.spwn --allow readfiles --level-name "YOUR LEVEL NAME"
+After that if no errors, script will ask you for path. Just paste it in console.
