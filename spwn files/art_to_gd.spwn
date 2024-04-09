@@ -1,6 +1,7 @@
 extract obj_props
 
-path = "C:\\Users\\DENIS\\Desktop\\gd gameplay deltarune-undertale\\Undertale-Deltarune-gameplay-in-GD-with-SPWN\\"
+$.print("Paste path to art.json file folder like that: C:\\giga\\long\\path")
+path = $.get_input("Path: ").trim() + "\\"
 
 let channels_colors_set = []
 let colors = []
